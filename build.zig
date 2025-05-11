@@ -227,7 +227,7 @@ pub fn build(b: *std.Build) !void {
         }),
     });
 
-    if (b.option(bool, "enable-ssh", "Enable SSH support") orelse false) {
+    if (b.option(bool, "enable_ssh", "Enable SSH support") orelse false) {
         if (libssh2_dep) |ssh2| lib.linkLibrary(ssh2.artifact("ssh2"));
         features.addValues(.{
             .GIT_SSH = 1,
