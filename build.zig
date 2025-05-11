@@ -5,6 +5,11 @@ pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    const libssh2_dep = b.lazyDependency("libssh2", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
     const libgit_src = b.dependency("libgit2", .{});
     const libgit_root = libgit_src.path(".");
 
@@ -223,7 +228,7 @@ pub fn build(b: *std.Build) !void {
     });
 
     if (b.option(bool, "enable-ssh", "Enable SSH support") orelse false) {
-        lib.linkSystemLibrary("ssh2");
+        if (libssh2_dep) |ssh2| lib.linkLibrary(ssh2.artifact("ssh2"));
         features.addValues(.{
             .GIT_SSH = 1,
             .GIT_SSH_LIBSSH2 = 1,
